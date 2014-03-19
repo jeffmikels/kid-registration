@@ -1,0 +1,35 @@
+body
+{
+}
+
+body.report {
+	font-family: "Trebuchet MS", Verdana, sans-serif;
+	font-size: 10pt;
+	background: none;
+	background: #efefff;
+	color: black;
+	width: 480px;
+	margin:0;
+}
+body.report #main
+{
+		width: 460px;
+		margin: 0;
+		padding: 10px;
+		background: none;
+		color: black;
+		box-shadow: none;
+		border:none;
+		overflow:auto;
+}
+body.report table
+{
+	border: 1px solid #aaa;
+	box-shadow: 2px 2px 5px #aaa;
+	width:460px;
+}
+body.report table td {border: 1px solid #eee;font-size: 10pt;}
+
+table#reports_box {display: none;}
+
+img.logo {width: auto; height:50px;display:block;}
