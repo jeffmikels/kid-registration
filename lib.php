@@ -261,41 +261,7 @@ function my_query($sql)
 	global $db;
 	$rows = $db->get_rows($sql);
 	return $rows;
-	/*
-	$retval = Array();
-	while ($row = $result->fetchArray(SQLITE3_ASSOC))
-	{
-		$retval[] = $row;
-	}
-	return $retval;
-	*/
 }
-
-
-
-
-/*
-function get_households($household_id = '')
-{
-	global $db;
-	if ($household_id)
-	{
-		$sql = sprintf("SELECT * FROM households WHERE id='%s'", $db->escapeString($household_id));
-		$return_single = TRUE;
-	}
-	else
-	{
-		$sql = sprintf("SELECT * FROM households");
-		$return_single = FALSE;
-	}
-
-	$result = $db->query($sql);
-	if ($result === FALSE) return 0;
-	$retval = Array();
-	while ($row = $result->fetchArray()) $retval[] = $row;
-	return $retval;
-}
-*/
 
 function get_rooms($simple_array = FALSE)
 {

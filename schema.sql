@@ -32,7 +32,28 @@ CREATE TABLE IF NOT EXISTS `allergy_list` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=89 ;
 
--- --------------------------------------------------------
+--
+-- Dumping data for table `allergy_list`
+--
+
+INSERT INTO `allergy_list` (`id`, `label`) VALUES
+(1, 'milk'),
+(2, 'lactose'),
+(3, 'eggs'),
+(4, 'peanuts'),
+(5, 'soy'),
+(6, 'tree nuts'),
+(7, 'wheat'),
+(8, 'gluten'),
+(9, 'fish'),
+(10, 'shellfish'),
+(11, 'coconut'),
+(12, 'strawberries'),
+(13, 'cinnamon'),
+(14, 'carrots'),
+(15, 'red food coloring'),
+(16, 'citrus');
+
 
 --
 -- Table structure for table `attendance`
