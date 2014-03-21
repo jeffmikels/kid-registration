@@ -10,6 +10,7 @@ $db_pass = '';
 
 
 // APP VARIABLES
+$auth_password = '';
 $appname = '';
 $cookiename = '';
 $displayname = "";

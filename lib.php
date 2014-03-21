@@ -1329,8 +1329,9 @@ function logout()
 function authenticate()
 {
 	global $cookiename;
+	global $auth_password;
 	// process posted data
-	if (isset($_POST['key']) and $_POST['key'] == 'innovation')
+	if (isset($_POST['key']) and $_POST['key'] == $auth_password)
 	{
 		$_SESSION['logged_in'] = True;
 		setcookie($cookiename, "True");
