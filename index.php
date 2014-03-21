@@ -34,7 +34,7 @@ $body_class = "home";
 <html>
 <head>
 	<!-- <base href="http://lafayettecc.org/kidopolis/" /> -->
-	<title>Innovation Kids Registration</title>
+	<title><?php echo $display_name; ?></title>
 
 	<!-- STYLESHEETS -->
 	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
@@ -52,9 +52,7 @@ $body_class = "home";
 
 	<style type="text/css">
 		body {
-			background: url(images/9940.jpg) no-repeat;
-			background-position:40% 0;
-			background-size:cover;
+			background-image: url(<?php echo $page_background; ?>);
 		}
 		@media (min-width: 1440px)
 		{

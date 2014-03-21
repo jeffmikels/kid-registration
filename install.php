@@ -1,45 +1,24 @@
 <?php
-	
-import "lib.php";
+
+$doing_install = True;
+include "lib.php";
+global $db;
 
 $schema = <<<HEREDOC
-	-- phpMyAdmin SQL Dump
-	-- version 3.4.10.1deb1
-	-- http://www.phpmyadmin.net
-	--
-	-- Host: localhost
-	-- Generation Time: Feb 27, 2014 at 08:48 PM
-	-- Server version: 5.5.32
-	-- PHP Version: 5.3.10-1ubuntu3.8
-
 	SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 	SET time_zone = "+00:00";
-
-
 	/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 	/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 	/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 	/*!40101 SET NAMES utf8 */;
 
-	--
-	-- Database: `database`
-	--
-
-	-- --------------------------------------------------------
-
-	--
-	-- Table structure for table `allergy_list`
-	--
-
+	DROP TABLE IF EXISTS `allergy_list`;
+	
 	CREATE TABLE IF NOT EXISTS `allergy_list` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `label` text NOT NULL,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=89 ;
-
-	--
-	-- Dumping data for table `allergy_list`
-	--
+	) DEFAULT CHARSET=utf8 ;
 
 	INSERT INTO `allergy_list` (`id`, `label`) VALUES
 	(1, 'milk'),
@@ -63,7 +42,8 @@ $schema = <<<HEREDOC
 	--
 	-- Table structure for table `attendance`
 	--
-
+	DROP TABLE IF EXISTS `attendance`;
+	
 	CREATE TABLE IF NOT EXISTS `attendance` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `child_id` int(11) DEFAULT NULL,
@@ -72,14 +52,15 @@ $schema = <<<HEREDOC
 	  `note` longtext,
 	  `service` tinytext,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4405 ;
+	) DEFAULT CHARSET=utf8 ;
 
 	-- --------------------------------------------------------
 
 	--
 	-- Table structure for table `attendance_notification_queue`
 	--
-
+	
+	DROP TABLE IF EXISTS `attendance_notification_queue`;
 	CREATE TABLE IF NOT EXISTS `attendance_notification_queue` (
 	  `id` int(11) NOT NULL,
 	  `child_id` int(11) DEFAULT NULL,
@@ -87,14 +68,15 @@ $schema = <<<HEREDOC
 	  `time` int(11) DEFAULT NULL,
 	  `attendance_id` int(11) DEFAULT NULL,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	) DEFAULT CHARSET=utf8;
 
 	-- --------------------------------------------------------
 
 	--
 	-- Table structure for table `child2allergy`
 	--
-
+	
+	DROP TABLE IF EXISTS `child2allergy`;
 	CREATE TABLE IF NOT EXISTS `child2allergy` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `child_id` int(11) NOT NULL,
@@ -102,14 +84,14 @@ $schema = <<<HEREDOC
 	  PRIMARY KEY (`id`),
 	  KEY `child_id` (`child_id`),
 	  KEY `allergy_id` (`allergy_id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=640 ;
+	) DEFAULT CHARSET=utf8 ;
 
 	-- --------------------------------------------------------
 
 	--
 	-- Table structure for table `children`
 	--
-
+	DROP TABLE IF EXISTS `children`;
 	CREATE TABLE IF NOT EXISTS `children` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `first_name` text,
@@ -119,44 +101,28 @@ $schema = <<<HEREDOC
 	  `status` text,
 	  `last_room` int(11) DEFAULT NULL,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=379 ;
-
-	-- --------------------------------------------------------
-
-	--
-	-- Table structure for table `children_old`
-	--
-
-	CREATE TABLE IF NOT EXISTS `children_old` (
-	  `id` int(11) NOT NULL AUTO_INCREMENT,
-	  `first_name` text,
-	  `last_name` text,
-	  `birthday` int(11) DEFAULT NULL,
-	  `allergies` longtext,
-	  `status` text,
-	  `last_room` int(11) DEFAULT NULL,
-	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=202 ;
+	) DEFAULT CHARSET=utf8 ;
 
 	-- --------------------------------------------------------
 
 	--
 	-- Table structure for table `household2child`
 	--
-
+	
+	DROP TABLE IF EXISTS `household2child`;
 	CREATE TABLE IF NOT EXISTS `household2child` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `household_id` int(11) DEFAULT NULL,
 	  `child_id` int(11) DEFAULT NULL,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=376 ;
+	) DEFAULT CHARSET=utf8 ;
 
 	-- --------------------------------------------------------
 
 	--
 	-- Table structure for table `households`
 	--
-
+	DROP TABLE IF EXISTS `households`;
 	CREATE TABLE IF NOT EXISTS `households` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `household_name` text,
@@ -170,70 +136,60 @@ $schema = <<<HEREDOC
 	  `date` int(11) DEFAULT NULL,
 	  `civicrm_id` int(11) DEFAULT NULL,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=256 ;
-
-	-- --------------------------------------------------------
-
-	--
-	-- Table structure for table `imported_households`
-	--
-
-	CREATE TABLE IF NOT EXISTS `imported_households` (
-	  `id` int(11) NOT NULL AUTO_INCREMENT,
-	  `household_name` text,
-	  `home_phone` text,
-	  `email` text,
-	  `cell_phone` text,
-	  `address` text,
-	  `city` text,
-	  `state` text,
-	  `zip` text,
-	  `date` int(11) DEFAULT NULL,
-	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+	) DEFAULT CHARSET=utf8 ;
 
 	-- --------------------------------------------------------
 
 	--
 	-- Table structure for table `notes`
 	--
-
+	DROP TABLE IF EXISTS `notes`;
 	CREATE TABLE IF NOT EXISTS `notes` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
 	  `household_id` int(11) DEFAULT NULL,
 	  `date` int(11) DEFAULT NULL,
 	  `note` longtext,
 	  PRIMARY KEY (`id`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+	) DEFAULT CHARSET=utf8 ;
 
 	/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 	/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 	/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 HEREDOC;
 
-
-// test to see if we need to install
-$rows = my_query('SELECT * FROM allergy_list');
-debug($rows);
-
-die();
-
-//my_query($schema);
-
-
+$stage = 1;
+if (isset($_GET['stage'])) $stage = $_GET['stage'];
 
 ?>
+
+
 <html>
 <head>
 	<style>
-	body {font-size:24pt;margin:20px auto; width:60%;background-color:black;}
-	div {background-color:white;border:1px solid #eee; border-radius:20px;text-align:center;}
+	body {font-size:24pt;margin:20px auto; width:60%;background-color:black;font-family:sans-serif;}
+	div {background-color:#eee;border:1px solid #eee; border-radius:20px;text-align:center;padding:5%;}
+	.button {display:inline-block; border: 1px solid black; padding:10px; border-radius:12px; background:#aaa;color:black;}
+	.button:hover {background:white;}
+	a {text-decoration:none;}
 	</style>
 </head>
 <body>
+	<?php if ($stage == 1): ?>
+		<div>
+			This script will delete and reinstall the kid registration database. Are you sure you want to continue?
+			<br />
+			<a class="button" href="install.php?stage=2">Yes</a>
+		</div>
+	<?php elseif ($stage == 2): ?>
 	<div>
+		<?php
+			echo "<p>Running the installation script</p>";
+			$db->multi_query($schema);
+		?>
+		
 		If there were no error messages, then the database tables were successfully installed.
-		Click <a href="index.php">HERE</a> to go to the main site.
+		Click <a class="button" href="index.php">HERE</a> to go to the main site.
 	</div>
+	<?php endif; ?>
 </body>
 </html>
