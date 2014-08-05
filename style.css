@@ -219,6 +219,9 @@ input, textarea {border:0; border-radius:6px;font-size:36pt;background:rgba(255,
 input[type=text]:focus, select:focus, textarea:focus {background:white;}
 input[type=submit]:focus {box-shadow:0 0 30px yellow;}
 
+.allergy-group{margin-top:30px;}
+.allergy-group input[type="text"] {width:100%;}
+span.child {display:inline-block;background:navy;color:white;padding:2px 6px;border-radius:6px;}
 
 
 /* SEARCH BOX */

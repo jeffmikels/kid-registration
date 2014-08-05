@@ -194,18 +194,66 @@ function debug ($s)
 		print "\n</pre>\n";
 	}
 }
-
-function isInstalled()
-{
-	global $db;
-	$sql = 'SELECT 1 from households';
-	if ( $db->query($sql) ) return True;
-	else return FALSE;
-}
-
 function today()
 {
 	return strtotime(strftime("%m/%d/%Y", time()));
+}
+
+function do_install($dump = FALSE)
+{
+	global $db;
+	if ($dump)
+	{
+		$db->exec('DROP TABLE households');
+		$db->exec('DROP TABLE children');
+		$db->exec('DROP TABLE attendance');
+		$db->exec('DROP TABLE household2child');
+		$db->exec('DROP TABLE notes');
+	}
+	$db->exec(
+		'CREATE TABLE households (
+			id integer PRIMARY KEY AUTOINCREMENT,
+			household_name text,
+			home_phone text,
+			email text,
+			cell_phone text,
+			address text,
+			city text,
+			state text,
+			zip text,
+			date date);'
+		);
+	$db->exec(
+		'CREATE TABLE children (
+			id integer PRIMARY KEY AUTOINCREMENT,
+			first_name text,
+			last_name text,
+			birthday date,
+			allergies longtext,
+			status text);'
+		);
+	$db->exec(
+		'CREATE TABLE attendance (
+			id integer PRIMARY KEY AUTOINCREMENT,
+			child_id integer,
+			date date,
+			room_id integer,
+			note longtext);'
+		);
+	$db->exec(
+		'CREATE TABLE household2child (
+			id integer PRIMARY KEY AUTOINCREMENT,
+			household_id integer,
+			child_id integer);'
+		);
+	$db->exec(
+		'CREATE TABLE notes (
+			id integer PRIMARY KEY AUTOINCREMENT,
+			household_id integer,
+			note longtext,
+			date date);'
+		);
+
 }
 
 function my_query($sql)
@@ -213,7 +261,41 @@ function my_query($sql)
 	global $db;
 	$rows = $db->get_rows($sql);
 	return $rows;
+	/*
+	$retval = Array();
+	while ($row = $result->fetchArray(SQLITE3_ASSOC))
+	{
+		$retval[] = $row;
+	}
+	return $retval;
+	*/
 }
+
+
+
+
+/*
+function get_households($household_id = '')
+{
+	global $db;
+	if ($household_id)
+	{
+		$sql = sprintf("SELECT * FROM households WHERE id='%s'", $db->escapeString($household_id));
+		$return_single = TRUE;
+	}
+	else
+	{
+		$sql = sprintf("SELECT * FROM households");
+		$return_single = FALSE;
+	}
+
+	$result = $db->query($sql);
+	if ($result === FALSE) return 0;
+	$retval = Array();
+	while ($row = $result->fetchArray()) $retval[] = $row;
+	return $retval;
+}
+*/
 
 function get_rooms($simple_array = FALSE)
 {
@@ -287,6 +369,47 @@ function get_allergies($child_id = '')
 		$retval[$id] = $label;
 	}
 	return $retval;
+}
+
+function get_allergies_with_kids()
+{
+	global $db;
+	$allergies = get_allergies();
+	foreach ($allergies as $id=>$allergy)
+	{
+		$sql = sprintf("SELECT first_name, last_name FROM children WHERE id IN (SELECT child_id FROM child2allergy ca WHERE ca.allergy_id = '%s')", $db->escapeString($id));
+		// $sql = sprintf("SELECT child_id FROM child2allergy WHERE allergy_id=%s", $db->escapeString($id));
+		// $sql = sprintf("SELECT * FROM child2allergy WHERE allergy_id=75");	
+		// debug($sql);
+		// debug(my_query($sql));
+		$allergies[$id] = Array('children' => my_query($sql));
+		$allergies[$id]['label'] = $allergy;
+	}
+	return $allergies;
+}
+
+function save_allergy($allergy_object)
+{
+	// debug($allergy_object);
+	global $db;
+	if (isset($allergy_object['id']))
+	{
+		if (isset($allergy_object['label']) && $allergy_object['label'])
+			$sql = sprintf("UPDATE allergy_list SET label='%s' WHERE id=%s", $db->escapeString($allergy_object['label']), $db->escapeString($allergy_object['id']));
+		else
+		{
+			$sql = sprintf("DELETE FROM child2allergy WHERE allergy_id=%s", $db->escapeString($allergy_object['id']));
+			my_query($sql);
+			
+			$sql = sprintf("DELETE FROM allergy_list WHERE id=%s", $db->escapeString($allergy_object['id']));
+		}
+	}
+	else
+	{
+		if (isset($allergy_object['label']) && $allergy_object['label'])
+			$sql = sprintf("INSERT INTO allergy_list (label) VALUES ('%s')", $db->escapeString($allergy_object['label']));
+	}
+	my_query($sql);
 }
 
 function save_allergies($child_id, $allergy_array)
@@ -1112,6 +1235,164 @@ function make_table($columns, $data, $table_class="", $link="", $headline)
 
 
 
+// INITIALIZATION CODE
+$db = new my_db_mysql();
+if ($_GET['install'] and $allow_install)
+{
+	do_install();
+}
+if ($is_testing)
+{
+	do_install(TRUE);
+	/*CREATE SAMPLE DATABASE ENTRIES
+	 - ten households
+		(one new household, second week household, third week household all with this sunday as attendance and random other sundays)
+		(one household with five attendances for five consecutive weeks ending this week)
+		(one household with five attendances for five consecutive weeks ending last week)
+		(one household with five attendances for five consecutive weeks ending two weeks ago)
+		(one household with five attendances for five consecutive weeks ending three weeks ago)
+		(one household with five attendances for five consecutive weeks ending four weeks ago)
+		(one household with five attendances for five consecutive weeks ending five weeks ago)
+		(one household with five attendances for five consecutive weeks ending six weeks ago)
+
+	 - each household with three kids of random birthdays
+		last__week_kid with birthday of sunday - random days between 1 & 7
+		this_week_kid with birthday of sunday + random days between 1 & 7
+		sunday_kid with birthday on sunday
+
+	foreach household
+	1. create the household
+	2. create the kids for the households
+	3. create the attendance records
+
+	*/
+
+	$testing_household_names = array(
+		'new household',
+		'second visit',
+		'third visit',
+		'five consecutive',
+		'missed last week',
+		'missed two weeks',
+		'missed three weeks',
+		'missed four weeks',
+		'missed five weeks',
+		'missed six weeks'
+	);
+
+	$children_names = Array(
+		Array('birthday_before', 'sunday'),
+		Array('birthday_on', 'sunday'),
+		Array('birthday_during_this', 'week'),
+		Array('birthday_after_this','week')
+	);
+
+	$default_household = Array(
+		'cell_phone'=>'765-123-4567',
+		'address'=>'1234 Anystreet',
+		'city'=> 'Lafayette',
+		'state'=> 'IN',
+		'zip'=> '47909',
+		'email'=> 'nospam@neveremail.com',
+		'home_phone'=> '765-000-0000'
+	);
+
+	$day_of_week = idate("w");
+	$today = strtotime(strftime("%m/%d/%Y", time()));
+	$sunday = $today - ($day_of_week * 60 * 60 * 24);
+	$week = (60*60*24*7);
+
+	foreach ($testing_household_names as $index=>$name)
+	{
+		$household = $default_household;
+		$household['household_name'] = $name;
+		$household_id = save_household($household);
+		$household['id'] = $household_id;
+
+		foreach ($children_names as $index=>$name)
+		{
+			$child = Array();
+			$child['first_name'] = $name[0];
+			$child['last_name'] = $name[1];
+			switch ($index)
+			{
+				case 0:
+					$day_diff = (-1) * rand(1,180) - (365 * rand(1,8));
+					break;
+				case 1:
+					$day_diff = 0 - (365 * rand(1,8));
+					break;
+				case 2:
+					$day_diff = rand(1,7) - (365 * rand(1,8));
+					break;
+				case 3:
+					$day_diff = rand(8,180) - (365 * rand(1,8));
+					break;
+			}
+			$child['birthday'] = intval($sunday + (60*60*24*$day_diff));
+			$child['birthday'] = strftime("%m/%d/%Y", $child['birthday']);
+			$child['allergies'] = 'none';
+			$child_id = save_child($child, $household);
+			$child['id'] = $child_id;
+		}
+	}
+
+	// now enter attendance records
+	$households = get_households();
+	foreach ($households as $household)
+	{
+		foreach ($household['children'] as $child)
+		{
+			$child_id = $child['id'];
+			$child['room_id'] = get_child_room($child);
+			$room_id = $child['room_id'];
+			$attendance = Array(
+				'child_id' => $child_id,
+				'room_id' => $room_id,
+				'note' => ''
+			);
+			$missed_weeks = 0;
+
+			switch ($household['household_name'])
+			{
+				case 'third visit':
+					$visit_date = $sunday - ($week * rand(5,8));
+					$attendance['date'] = $visit_date;
+					save_attendance($attendance);
+				case 'second visit':
+					$visit_date = $sunday - ($week * rand(1,4));
+					$attendance['date'] = $visit_date;
+					save_attendance($attendance);
+				case 'new household':
+					$visit_date = $sunday;
+					$attendance['date'] = $visit_date;
+					save_attendance($attendance);
+					break;
+
+				case 'missed six weeks':
+					$missed_weeks += 1;
+				case 'missed five weeks':
+					$missed_weeks += 1;
+				case 'missed four weeks':
+					$missed_weeks += 1;
+				case 'missed three weeks':
+					$missed_weeks += 1;
+				case 'missed two weeks':
+					$missed_weeks += 1;
+				case 'missed last week':
+					$missed_weeks += 1;
+				case 'five consecutive':
+					for ($i = $missed_weeks; $i < 10; $i++)
+					{
+						$attendance['date'] = $sunday - ($week * $i);
+						save_attendance($attendance);
+					}
+			}
+		}
+	}
+}
+
+
 /* AUTHENTICATION */
 function logout()
 {
@@ -1123,9 +1404,8 @@ function logout()
 function authenticate()
 {
 	global $cookiename;
-	global $auth_password;
 	// process posted data
-	if (isset($_POST['key']) and $_POST['key'] == $auth_password)
+	if (isset($_POST['key']) and $_POST['key'] == 'innovation')
 	{
 		$_SESSION['logged_in'] = True;
 		setcookie($cookiename, "True");
@@ -1170,25 +1450,5 @@ function authenticate()
 
 }
 
-
-// INITIALIZATION CODE
-$db = new my_db_mysql();
-
-if ( $db->connect_errno )
-{
-	Header('Content-Type: text/plain');
-	echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
-	echo "\n" . 'Could not connect to database. Check your configuration settings.';
-	die();
-}
-
-/* CHECK TO SEE IF THE APP IS INSTALLED */
-if (! isInstalled() )
-{
-	if (! $doing_install) Header('Location: install.php');
-}
-else
-{
-	process_notification_queue();
-}
+process_notification_queue();
 ?>

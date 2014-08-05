@@ -23,6 +23,13 @@ include "header.php";
 		<tr>
 			<td colspan=3 class="header">
 				<center>
+					<a href="allergies.php">Edit Allergies</a>
+				</center>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=3 class="header">
+				<center>
 
 					<a href="report.php?admin=1">CURRENT SUMMARY REPORT</a>
 					<form method="GET" action="report.php">
