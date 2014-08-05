@@ -10,16 +10,17 @@ $db_pass = '';
 
 
 // APP VARIABLES
-$auth_password = 'password';
-$appname = '';
-$cookiename = '';
-$displayname = "";
+$auth_password = 'password';	// used to authenticate access to site
+$appname = '';					// only used internally
+$cookiename = '';				// used to configure the browser cookie
+$displayname = '';				// displayed to users
 $allow_install = 0;
 $showdebug = 1;
 
 
 // SITE DETAILS
 $page_background = "images/landscape.jpg";
+$mobile_background = "images/tablet_texture.jpg";
 $site_logo = "images/logo.png";
 
 

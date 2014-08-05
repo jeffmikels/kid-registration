@@ -36,8 +36,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 
 	<!-- STYLESHEETS -->
 	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="style.css" />
-	<link rel="stylesheet" href="tablet.css" />
+	<link rel="stylesheet" type="text/css" href="newstyle.css" />
 	<style type="text/css">
 	</style>
 
@@ -76,7 +75,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 <div id="page">
 	<div id="main">
 		<div id="header">
-			<a href="room_checkin.php"><img class="logo" src="images/logo.png" style="vertical-align: bottom;" /></a>
+			<a href="room_checkin.php"><img class="logo" src="<?php echo $site_logo; ?>" style="vertical-align: bottom;" /></a>
 		</div>
 
 		<?php if ($err) : ?>
@@ -107,8 +106,15 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 		</ul>
 
 		<div class="content" style="margin: 600px 0 100px;font-size: 1.2em;">
-			<a href="room_checkin.php?room_id=<?php print $room_id; ?>&teacher_view=1" >Teacher View</a> |
-			<a href="room_checkin.php?room_id=<?php print $room_id; ?>" >Normal View</a>
+			Options:
+			<?php
+			if (isset($_GET['teacher_view']) && $_GET['teacher_view'])
+				{$teacher_color = 'red';$normal_color='gray';}
+			else
+				{$teacher_color = 'gray';$normal_color='red';}
+			?>
+			<a class="smallbutton <?php echo $teacher_color; ?>" href="room_checkin.php?room_id=<?php print $room_id; ?>&teacher_view=1" >Teacher View</a>
+			<a class="smallbutton <?php echo $normal_color; ?>" href="room_checkin.php?room_id=<?php print $room_id; ?>" >Normal View</a>
 			//
 			<?php
 
