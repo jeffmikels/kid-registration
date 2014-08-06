@@ -1016,6 +1016,7 @@ function simple_sms($cell, $msg)
 function notify_parent($child_id, $msg, $attendance_id='', $immediately=false, $force=false)
 {
 	global $db;
+	global $displayname;
 
 	// if the child is not in attendance, we abort the notification;
 	if (! $attendance_id and ! $force ) return "no attendance data set";
@@ -1033,7 +1034,7 @@ function notify_parent($child_id, $msg, $attendance_id='', $immediately=false, $
 	{
 		$msg = str_replace("[$key]", $value, $msg);
 	}
-	$msg = "INNOVATION KIDS: $msg";
+	$msg = $displayname . ": $msg";
 	$cell = escapeshellarg($cell);
 	$msg = escapeshellarg($msg);
 	if ($immediately)
@@ -1404,8 +1405,10 @@ function logout()
 function authenticate()
 {
 	global $cookiename;
+	global $auth_password;
+
 	// process posted data
-	if (isset($_POST['key']) and $_POST['key'] == 'innovation')
+	if (isset($_POST['key']) and $_POST['key'] == $auth_password)
 	{
 		$_SESSION['logged_in'] = True;
 		setcookie($cookiename, "True");
@@ -1428,7 +1431,7 @@ function authenticate()
 
 	<html>
 		<head>
-			<title>Innovation Kids Login</title>
+			<title><?php echo $displayname; ?> Login</title>
 			<style type="text/css">
 				body {margin: 200px auto; width: 500px;background: #222; color: white;font-size: 14pt;text-align:left;}
 				input {font-family: "Trebuchet MS", "Tahoma", sans-serif; font-size: 24pt;border:5px solid cyan; border-radius: 10px;padding: 15px;}

@@ -25,7 +25,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 <html>
 <head>
 	<!-- <base href="http://lafayettecc.org/kidopolis/" /> -->
-	<title>Innovation Kids Fast Room Check-in</title>
+	<title><?php echo $displayname; ?> Fast Room Check-in</title>
 
 	<meta name="viewport" content="width=480" />
 
