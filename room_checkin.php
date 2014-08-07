@@ -1,8 +1,7 @@
 <?php
 // LOGIC
 include "lib.php";
-//$registrants = get_households_and_children();
-//$checkins = get_checkins($sunday_timestamp);
+
 $body_class = 'tablet';
 
 
@@ -24,7 +23,6 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- <base href="http://lafayettecc.org/kidopolis/" /> -->
 	<title><?php echo $displayname; ?> Fast Room Check-in</title>
 
 	<meta name="viewport" content="width=480" />
@@ -37,39 +35,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 	<!-- STYLESHEETS -->
 	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="newstyle.css" />
-	<style type="text/css">
-	</style>
 
-	<script>
-		function json_encode(arr) {
-			var parts = [];
-			var is_list = (Object.prototype.toString.apply(arr) === '[object Array]');
-
-			for(var key in arr) {
-				var value = arr[key];
-				if(typeof value == "object") { //Custom handling for arrays
-					if(is_list) parts.push(json_encode(value)); /* :RECURSION: */
-					else parts[key] = json_encode(value); /* :RECURSION: */
-				} else {
-					var str = "";
-					if(!is_list) str = '"' + key + '":';
-
-					//Custom handling for multiple data types
-					if(typeof value == "number") str += value; //Numbers
-					else if(value === false) str += 'false'; //The booleans
-					else if(value === true) str += 'true';
-					else str += '"' + value + '"'; //All other things
-					// :TODO: Is there any more datatype we should be in the lookout for? (Functions?)
-
-					parts.push(str);
-				}
-			}
-			var json = parts.join(",");
-
-			if(is_list) return '[' + json + ']';//Return numerical JSON
-			return '{' + json + '}';//Return associative JSON
-		}
-	</script>
 </head>
 <body class="<?php print $body_class;?>">
 <div id="page">
@@ -93,29 +59,45 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 	<?php if( isset($_GET['room_id'])) : ?>
 
 		<?php $room = $rooms[$_GET['room_id']]; ?>
-		<div class="content">
+		<div id="room_details" class="content">
 			<h2>Welcome to <?php print $room['name']; ?> @ <?php print $service_time; ?>!<br />Today is <?php print $sunday; ?></h2>
 			<br />
 			<div id="allergy_alert" class="allergy_alert"></div>
 			<div id="birthday_alert" class="birthday_alert"></div>
-
+			<div id="options_links">
+				
+				<?php
+				if (isset($_GET['teacher_view']) && $_GET['teacher_view'])
+					{$teacher_color = 'red';$normal_color='gray';}
+				else
+					{$teacher_color = 'gray';$normal_color='red';}
+				?>
+				<a class="smallbutton <?php echo $teacher_color; ?>"
+					href="room_checkin.php?room_id=<?php print $room_id; ?>&teacher_view=1" >
+					Teacher View
+				</a>
+				<a class="smallbutton <?php echo $normal_color; ?>"
+					href="room_checkin.php?room_id=<?php print $room_id; ?>" >
+					Normal View
+				</a>
+								
+				<?php
+				foreach ($service_times as $time=>$timestamp)
+				{
+					if ( $service_time == $time ) $color = 'orange';
+					else $color = 'gray';
+					print "<a class=\"smallbutton $color\" href=\"room_checkin.php?service_time=" . urlencode($time) . "&room_id=" . $room_id . "\">" . $time . "</a>";
+				}
+				?>
+				
+			</div>
 		</div>
 
 		<ul class="check_in_list" id="check_in_list">
-		<img src="ajax-loader.gif" style="margin:auto;"/>
+			<img src="ajax-loader.gif" style="margin:auto;"/>
 		</ul>
 
 		<div class="content" style="margin: 600px 0 100px;font-size: 1.2em;">
-			Options:
-			<?php
-			if (isset($_GET['teacher_view']) && $_GET['teacher_view'])
-				{$teacher_color = 'red';$normal_color='gray';}
-			else
-				{$teacher_color = 'gray';$normal_color='red';}
-			?>
-			<a class="smallbutton <?php echo $teacher_color; ?>" href="room_checkin.php?room_id=<?php print $room_id; ?>&teacher_view=1" >Teacher View</a>
-			<a class="smallbutton <?php echo $normal_color; ?>" href="room_checkin.php?room_id=<?php print $room_id; ?>" >Normal View</a>
-			//
 			<?php
 
 			foreach ($service_times as $time=>$timestamp)
@@ -307,14 +289,18 @@ function update_check_in_list(data)
 
 function toggle_check_in(child_id, room_id, service_timestamp)
 {
-	//$("#check_in_list").fadeTo('slow',0.3);
-	//$("#child_" + child_id).fadeIn();
 	$("#progress_" + child_id).show();
+	$("#child_" + child_id).toggleClass('checked_in');
+	$("#child_" + child_id).addClass('pressed');
 	retval = '';
-	$.getJSON("room_checkin_ajax.php?service_timestamp=" + service_timestamp + "&child_id=" + child_id + "&room_id=" + room_id, function(data){
-		$("#allergy_alert").html(data.SUCCESS);
-		refreshChildren(room_id, service_timestamp);
-	});
+	$.getJSON(
+		"room_checkin_ajax.php?service_timestamp=" + service_timestamp + "&child_id=" + child_id + "&room_id=" + room_id,
+		function(data)
+		{
+			$("#allergy_alert").html(data.SUCCESS);
+			refreshChildren(room_id, service_timestamp);
+		}
+	);
 	return retval;
 }
 

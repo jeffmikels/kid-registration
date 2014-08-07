@@ -8,6 +8,7 @@ body {
 			background-attachment: fixed;
 	color: white;
 	margin: 0 auto;
+	margin-bottom:60px;
 }
 
 a { text-decoration:none; font-weight: bold;}

@@ -11,6 +11,7 @@ body.tablet {
 	color: black;
 	width: 100%;
 	margin:0;
+	margin-bottom:60px;
 	padding:0;
 }
 
@@ -49,10 +50,17 @@ ul.check_in_list li,
 ul.button_list li{ box-sizing:border-box;width: 100%; padding: 8px 5px; margin: 5px 0; font-size: 24px; background: white; border-radius: 8px;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#cfcfff));
 }
-ul.check_in_list li a.check_in_link,
-ul.button_list li a { text-transform:uppercase;letter-spacing:-1px;text-decoration: none; display: block; line-height: 48px;padding: 0px 0 0px 80px; color: black; background: url("checkbox_unchecked.png") no-repeat;}
+ul.check_in_list li:active,
+ul.check_in_list li.pressed,
+ul.button_list li:active
+{
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#cfcfff), to(#fff));
+}
 
-ul.check_in_list li.checked_in a.check_in_link { display: block;; line-height:48px; padding: 0px 0 0px 80px; color: black;background: url("checkbox_checked.png") no-repeat;}
+ul.check_in_list li a.check_in_link,
+ul.button_list li a { text-transform:uppercase;letter-spacing:-1px;text-decoration: none; display: block; line-height: 48px;padding: 0px 0 0px 80px; color: black; background: url("images/checkbox_unchecked.png") no-repeat;}
+
+ul.check_in_list li.checked_in a.check_in_link { display: block;; line-height:48px; padding: 0px 0 0px 80px; color: black;background: url("images/checkbox_checked.png") no-repeat;}
 a {-webkit-tap-highlight-color: rgba(255, 255, 255, .1);}
 
 .child_meta {color:red; font-size: 12pt;line-height: 14pt;margin-left: 80px;}
@@ -72,9 +80,9 @@ a {-webkit-tap-highlight-color: rgba(255, 255, 255, .1);}
 	font: 50px/100% Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	text-shadow: 0 1px 1px rgba(0,0,0,.3);
-	-webkit-border-radius: .5em;
-	-moz-border-radius: .5em;
-	border-radius: .5em;
+	-webkit-border-radius: .3em;
+	-moz-border-radius: .3em;
+	border-radius: .3em;
 	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
 	-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);
 	box-shadow: 0 1px 2px rgba(0,0,0,.2);
@@ -87,7 +95,7 @@ a {-webkit-tap-highlight-color: rgba(255, 255, 255, .1);}
 	top: 1px;
 }
 
-.smallbutton { margin: 0 10px; padding: .5em 1em; font-size: .8em; }
+.smallbutton { margin: 0 2px; padding: .5em 1em; font-size: .8em; }
 
 
 /* color styles FROM http://www.webdesignerwall.com/demo/css-buttons.html
