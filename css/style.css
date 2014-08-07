@@ -222,7 +222,7 @@ input[type=submit]:focus {box-shadow:0 0 30px yellow;}
 
 .allergy-group{margin-top:30px;}
 .allergy-group input[type="text"] {width:100%;}
-span.child {display:inline-block;background:navy;color:white;padding:2px 6px;border-radius:6px;}
+span.child {display:inline-block;background-color:rgba(128,128,240,.3);color:white;margin:0 5px;padding:2px 6px;border-radius:6px;font-size:.8em;}
 
 
 /* SEARCH BOX */

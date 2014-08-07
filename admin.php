@@ -65,7 +65,7 @@ include "header.php";
 	<?php simple_table($columns, $checkins[$timestamp]['by_room'][$room['room_id']], "admin room" . $room['room_id']); ?>
 	<?php endforeach; ?>
 	<?php endforeach; ?>
-	<h2>All households with kids who've attended in the last 6 mos.</h2>
+	<h2>All households with kids who've attended in the last 6 mos. <a href="list.php"><small>All Households</small></a></h2>
 		<table class="admin" cellpadding=0 cellspacing=0>
 			<tr>
 				<th>Household</th>

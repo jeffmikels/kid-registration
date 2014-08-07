@@ -394,14 +394,21 @@ function save_allergy($allergy_object)
 	global $db;
 	if (isset($allergy_object['id']))
 	{
+		// set up sql statements
 		if (isset($allergy_object['label']) && $allergy_object['label'])
-			$sql = sprintf("UPDATE allergy_list SET label='%s' WHERE id=%s", $db->escapeString($allergy_object['label']), $db->escapeString($allergy_object['id']));
+		{
+			$sql = sprintf(
+				"UPDATE allergy_list SET label='%s' WHERE id=%s",
+				$db->escapeString($allergy_object['label']),
+				$db->escapeString($allergy_object['id'])
+			);
+		}
 		else
 		{
 			$sql = sprintf("DELETE FROM child2allergy WHERE allergy_id=%s", $db->escapeString($allergy_object['id']));
-			my_query($sql);
+			//my_query($sql);
 			
-			$sql = sprintf("DELETE FROM allergy_list WHERE id=%s", $db->escapeString($allergy_object['id']));
+			$sql .= "; " . sprintf("DELETE FROM allergy_list WHERE id=%s", $db->escapeString($allergy_object['id']));
 		}
 	}
 	else
@@ -409,7 +416,8 @@ function save_allergy($allergy_object)
 		if (isset($allergy_object['label']) && $allergy_object['label'])
 			$sql = sprintf("INSERT INTO allergy_list (label) VALUES ('%s')", $db->escapeString($allergy_object['label']));
 	}
-	my_query($sql);
+	// my_query($sql);
+	$db->multi_query($sql);
 }
 
 function save_allergies($child_id, $allergy_array)

@@ -35,8 +35,9 @@ $allergies = get_allergies_with_kids();
 		
 	<?php endforeach; ?>
 	
-	<h2>Add New Allergies</h2>
+	<hr />
 	
+	<h2>Add New Allergies</h2>
 	<?php for ($i = 1; $i<=5; $i++): ?>
 		
 		<div class="allergy-group">
@@ -45,9 +46,7 @@ $allergies = get_allergies_with_kids();
 		
 	<?php endfor; ?>
 	
-	<div class="allergy-group">
-		<input type="submit" class="smallbutton blue" name="submit" />
-	</div>
+	<input type="submit" class="bigbutton blue" name="submit" />
 </form>
 
 </body>
