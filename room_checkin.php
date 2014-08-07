@@ -34,7 +34,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 
 	<!-- STYLESHEETS -->
 	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="newstyle.css" />
+	<link rel="stylesheet" type="text/css" href="css/newstyle.css" />
 
 </head>
 <body class="<?php print $body_class;?>">
@@ -52,12 +52,10 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 		<div class="message" id="message_box"><?php print ($msg); ?></div>
 		<?php endif; ?>
 
-	<?php
-		// first we check to see if a room_id has been selected. If so, only show selections for that room.
-	?>
+	<!-- first we check to see if a room_id has been selected. If so, only show selections for that room. -->
 
 	<?php if( isset($_GET['room_id'])) : ?>
-
+		
 		<?php $room = $rooms[$_GET['room_id']]; ?>
 		<div id="room_details" class="content">
 			<h2>Welcome to <?php print $room['name']; ?> @ <?php print $service_time; ?>!<br />Today is <?php print $sunday; ?></h2>
@@ -94,7 +92,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 		</div>
 
 		<ul class="check_in_list" id="check_in_list">
-			<img src="ajax-loader.gif" style="margin:auto;"/>
+			<img src="images/ajax-loader.gif" style="margin:auto;"/>
 		</ul>
 
 		<div class="content" style="margin: 600px 0 100px;font-size: 1.2em;">
@@ -255,7 +253,7 @@ function update_check_in_list(data)
 		}
 
 		html += '<li id="child_' + child.id + '" class="' + list_class + '">';
-		html += '<img id="progress_' + child.id + '" src="ajax-loader.gif" style="float:right;display:none;"/>';
+		html += '<img id="progress_' + child.id + '" src="images/ajax-loader.gif" style="float:right;display:none;"/>';
 		html += '<a class="check_in_link" href="room_checkin.php?service_timestamp=' + service_timestamp + '&room_id=' + room_id + '&child_id=' + child.id + '" onclick="toggle_check_in('+ child.id +','+ room_id + ',' + service_timestamp + ');return false;">' + child.first_name + '&nbsp;' + child.last_name + '</a>';
 
 		<?php if ($_GET['teacher_view'] == 1): ?>

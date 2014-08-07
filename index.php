@@ -39,7 +39,7 @@ $body_class = "home";
 	<!-- STYLESHEETS -->
 	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
 
 
 	<!-- SCRIPTS -->

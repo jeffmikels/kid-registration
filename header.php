@@ -10,12 +10,12 @@
 	<!-- STYLESHEETS -->
 	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" href="anytimec.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/anytimec.css" type="text/css" media="all" />
 	<link rel="stylesheet" type="text/css" href="css/excite-bike/jquery-ui-1.8.16.custom.css" />
-	<link rel="stylesheet" type="text/css" href="style.css" />
-	<link rel="stylesheet" href="handheld.css" media="handheld"/>
-	<link rel="stylesheet" href="handheld.css" media="only screen and (max-device width:480px)"/>
-	<?php if (isset($_GET['force_mobile'])) {?><link rel="stylesheet" href="handheld.css" media="all" /><?php }?>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" href="css/handheld.css" media="handheld"/>
+	<link rel="stylesheet" href="css/handheld.css" media="only screen and (max-device width:480px)"/>
+	<?php if (isset($_GET['force_mobile'])) {?><link rel="stylesheet" href="css/handheld.css" media="all" /><?php }?>
 
 
 	<!-- SCRIPTS -->

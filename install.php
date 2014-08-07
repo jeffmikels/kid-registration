@@ -174,7 +174,12 @@ if (isset($_GET['stage'])) $stage = $_GET['stage'];
 	</style>
 </head>
 <body>
-	<?php if ($stage == 1): ?>
+	<?php if ($allow_install !== 1) :?>
+		<div>
+			Installation is disabled. Edit the config.php file and make sure it contains this line:
+			<br /><br /><code>$allow_install = 1;</code>
+		</div>		
+	<?php elseif ($stage == 1): ?>
 		<div>
 			This script will delete and reinstall the kid registration database. Are you sure you want to continue?
 			<br />

@@ -58,9 +58,9 @@ ul.button_list li:active
 }
 
 ul.check_in_list li a.check_in_link,
-ul.button_list li a { text-transform:uppercase;letter-spacing:-1px;text-decoration: none; display: block; line-height: 48px;padding: 0px 0 0px 80px; color: black; background: url("images/checkbox_unchecked.png") no-repeat;}
+ul.button_list li a { text-transform:uppercase;letter-spacing:-1px;text-decoration: none; display: block; line-height: 48px;padding: 0px 0 0px 80px; color: black; background: url("../images/checkbox_unchecked.png") no-repeat;}
 
-ul.check_in_list li.checked_in a.check_in_link { display: block;; line-height:48px; padding: 0px 0 0px 80px; color: black;background: url("images/checkbox_checked.png") no-repeat;}
+ul.check_in_list li.checked_in a.check_in_link { display: block;; line-height:48px; padding: 0px 0 0px 80px; color: black;background: url("../images/checkbox_checked.png") no-repeat;}
 a {-webkit-tap-highlight-color: rgba(255, 255, 255, .1);}
 
 .child_meta {color:red; font-size: 12pt;line-height: 14pt;margin-left: 80px;}
