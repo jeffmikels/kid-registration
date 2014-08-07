@@ -20,7 +20,7 @@ $showdebug = 1;
 
 // SITE DETAILS
 $page_background = "images/landscape.jpg";
-$mobile_background = "images/tablet_texture.jpg";
+$mobile_background = "images/tablet-background.png";
 $site_logo = "images/logo.png";
 
 

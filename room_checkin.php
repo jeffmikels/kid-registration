@@ -144,7 +144,7 @@ if (isset($_GET['room_id'])) $room_id=$_GET['room_id'];
 <!--
 <div id="alert_box">
 	<audio id="alert_sound" preload="true">
-		<source src="glass.mp3" type="audio/mpeg"></source>
+		<source src="audio/glass.mp3" type="audio/mpeg"></source>
 	</audio>
 </div>
 -->
@@ -179,7 +179,7 @@ function play_alert()
 {
 	audio = $('#alert_sound')[0];
 	audio.play();
-	audio.src = 'glass.mp3';
+	audio.src = 'audio/glass.mp3';
 	audio.load();
 }
 </script>
