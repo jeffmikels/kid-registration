@@ -40,7 +40,7 @@ include "header.php";
 <div class="notice">
 <?php foreach ($household['children'] as $child) : ?>
 <?php $room = $rooms[$child['last_room']]; ?>
-<h2><?php print $child['first_name'];?> (<?php print $child['age']; ?> yrs.) :: <?php print $room['name']; ?></h2>
+<h2><span class="name"><?php print $child['first_name'];?> (<?php if ($child['age'] < 2) print round(12*$child['age']) . " months"; else print round($child['age']) . " years" ?> old)</span> is ready for <span class="room"><?php print $room['name']; ?></span></h2>
 <?php print $child['first_name'];?> is set up to go to <em><?php print $room['name']; ?></em>. <?php print $room['description']; ?>.
 <?php endforeach; ?>
 </div>

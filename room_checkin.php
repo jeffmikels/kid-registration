@@ -295,7 +295,6 @@ function toggle_check_in(child_id, room_id, service_timestamp)
 		"room_checkin_ajax.php?service_timestamp=" + service_timestamp + "&child_id=" + child_id + "&room_id=" + room_id,
 		function(data)
 		{
-			$("#allergy_alert").html(data.SUCCESS);
 			refreshChildren(room_id, service_timestamp);
 		}
 	);
@@ -304,7 +303,6 @@ function toggle_check_in(child_id, room_id, service_timestamp)
 
 function refreshChildren ( room_id, service_timestamp )
 {
-	//alert("room_checkin_ajax.php?room_id=" + room_id + "&service_timestamp=" + service_timestamp);
 	$.getJSON("room_checkin_ajax.php?room_id=" + room_id + "&service_timestamp=" + service_timestamp, function(data){
 		update_check_in_list(data);
 	});
@@ -339,7 +337,6 @@ function do_notify_callback ( )
 	attendance_id = $("#sms_prompt_attendance_id").val();
 	msg = $("#sms_prompt_response").val()
 	if ( ! msg ) return;
-	//alert("room_checkin_ajax.php?notifications=" + notifications + "&do_notify=1&child_id=" + child_id + "&attendance_id=" + attendance_id + "&msg=" + msg);
 	$.getJSON(
 		"room_checkin_ajax.php?notifications=" + notifications + "&do_notify=1&child_id=" + child_id + "&attendance_id=" + attendance_id + "&msg=" + msg,
 		function(data){

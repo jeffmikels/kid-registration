@@ -11,6 +11,7 @@ $db_pass = '';
 
 // APP VARIABLES
 $auth_password = 'password';	// used to authenticate access to site
+$apikey = '';					// used to authenticate from a mobile app
 $appname = '';					// only used internally
 $cookiename = '';				// used to configure the browser cookie
 $displayname = '';				// displayed to users

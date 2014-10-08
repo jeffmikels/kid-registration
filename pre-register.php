@@ -1,6 +1,8 @@
 <?php
 // LOGIC
+include "config.php";
 
+$doing_pre_register = true;
 
 // STAGE ONE, NOTHING IS SET, USER IS NOT LOGGED IN, LET THEM KNOW THE PASSWORD.
 if (! isset ($_SESSION['logged_in']) and ! isset($_GET['stage']))
@@ -165,35 +167,35 @@ if ($_GET['stage'] == '2')
 
 					<tr>
 						<td class="legend">Household Name</td>
-						<td class="input"><input id="household_name" name="household_name" value="<?php print $household['household_name']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>example: Jeff and Jennifer Mikels</small></td>
+						<td class="input"><input type="text" id="household_name" name="household_name" value="<?php print $household['household_name']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>example: Jeff and Jennifer Mikels</small></td>
 					</tr>
 					<tr>
 						<td class="legend">Mailing Address</td>
-						<td class="input"><input id="address" name="address" value="<?php print $household['address']; ?>" onfocus="scroll_here(this);this.select();"  /></td>
+						<td class="input"><input type="text" id="address" name="address" value="<?php print $household['address']; ?>" onfocus="scroll_here(this);this.select();"  /></td>
 					</tr>
 					<tr>
 						<td class="legend">City</td>
-						<td class="input"><input id="city" name="city" value="<?php print $household['city']; ?>"  onfocus="scroll_here(this);this.select();" /></td>
+						<td class="input"><input type="text" id="city" name="city" value="<?php print $household['city']; ?>"  onfocus="scroll_here(this);this.select();" /></td>
 					</tr>
 					<tr>
 						<td class="legend">State</td>
-						<td class="input"><input id="state" name="state" value="<?php print $household['state']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+						<td class="input"><input type="text" id="state" name="state" value="<?php print $household['state']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 					</tr>
 					<tr>
 						<td class="legend">ZIP</td>
-						<td class="input"><input id="zip" name="zip" value="<?php print $household['zip']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+						<td class="input"><input type="text" id="zip" name="zip" value="<?php print $household['zip']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 					</tr>
 					<tr>
 						<td class="legend">email</td>
-						<td class="input"><input id="email" name="email" value="<?php print $household['email']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+						<td class="input"><input type="email" id="email" name="email" value="<?php print $household['email']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 					</tr>
 					<tr>
 						<td class="legend">Notification Phone</td>
-						<td class="input"><input id="cell_phone" name="cell_phone" value="<?php print $household['cell_phone']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>Please turn your cell phone ON and set it to vibrate during the service.</small></td>
+						<td class="input"><input type="phone" class="phone" id="cell_phone" name="cell_phone" value="<?php print $household['cell_phone']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>Please keep your phone ON and set to vibrate during the worship gathering.</small></td>
 					</tr>
 					<tr>
 						<td class="legend">Other Phone</td>
-						<td class="input"><input id="home_phone" name="home_phone" value="<?php print $household['home_phone']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+						<td class="input"><input type="phone" class="phone" id="home_phone" name="home_phone" value="<?php print $household['home_phone']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 					</tr>
 
 					<tr><td colspan=2 class="header">&nbsp;</td></tr>

@@ -78,12 +78,12 @@ include "header.php";
 <?php foreach ($household['children'] as $child) : ?>
 <?php $class='info'; ?>
 <?php
-	$last_room = $rooms[$child['room_id']];
+	$last_room = $rooms[$child['last_room']];
 	$suggested_room = $rooms[$child['suggested_room']];
 	
 	$class='info';
 	$room_notice = '. '.$last_room['description'];
-	if ($child['room_id'] <> $child['suggested_room'])
+	if ($child['last_room'] <> $child['suggested_room'])
 	{
 		$class = 'alert';
 		$room_notice = ', but ' . $suggested_room['name'] . ' might be a better fit. Here\'s a comparison of the two rooms: <ul><li>' . $last_room['description'] . '</li><li>' . $suggested_room['description'] . '</li></ul>Please specify your room preference below';
@@ -113,35 +113,35 @@ include "header.php";
 
 				<tr>
 					<td class="legend">Household Name</td>
-					<td class="input"><input name="household_name" value="<?php print $household['household_name']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>example: Jeff and Jennifer Mikels</small></td>
+					<td class="input"><input type="text" name="household_name" value="<?php print $household['household_name']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>example: Jeff and Jennifer Mikels</small></td>
 				</tr>
 				<tr>
 					<td class="legend">Mailing Address</td>
-					<td class="input"><input name="address" value="<?php print $household['address']; ?>" onfocus="scroll_here(this);this.select();"  /></td>
+					<td class="input"><input type="text" name="address" value="<?php print $household['address']; ?>" onfocus="scroll_here(this);this.select();"  /></td>
 				</tr>
 				<tr>
 					<td class="legend">City</td>
-					<td class="input"><input name="city" value="<?php print $household['city']; ?>"  onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="city" value="<?php print $household['city']; ?>"  onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">State</td>
-					<td class="input"><input name="state" value="<?php print $household['state']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="state" value="<?php print $household['state']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">ZIP</td>
-					<td class="input"><input name="zip" value="<?php print $household['zip']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="zip" value="<?php print $household['zip']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">email</td>
-					<td class="input"><input name="email" value="<?php print $household['email']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="email" name="email" value="<?php print $household['email']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">Cell Phone</td>
-					<td class="input"><input class="phone" name="cell_phone" value="<?php print $household['cell_phone']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>Please turn your cell phone ON and set it to vibrate during the service.</small></td>
+					<td class="input"><input type="phone" class="phone" name="cell_phone" value="<?php print $household['cell_phone']; ?>" onfocus="scroll_here(this);this.select();" /><br /><small>Please turn your cell phone ON and set it to vibrate during the service.</small></td>
 				</tr>
 				<tr>
 					<td class="legend">Home Phone</td>
-					<td class="input"><input class="phone" name="home_phone" value="<?php print $household['home_phone']; ?>" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="phone" class="phone" name="home_phone" value="<?php print $household['home_phone']; ?>" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 
 				<tr>
@@ -167,15 +167,15 @@ include "header.php";
 
 				<tr>
 					<td class="legend">First Name</td>
-					<td class="input"><input name="children[<?php print $child['id']; ?>][first_name]" value="<?php print $child['first_name'];?>" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="children[<?php print $child['id']; ?>][first_name]" value="<?php print $child['first_name'];?>" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">Last Name</td>
-					<td class="input"><input name="children[<?php print $child['id']; ?>][last_name]" value="<?php print $child['last_name'];?>" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="children[<?php print $child['id']; ?>][last_name]" value="<?php print $child['last_name'];?>" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">Birthday</td>
-					<td class="input"><input name="children[<?php print $child['id']; ?>][birthday]" class="birthdate" id="birthday<?php print $child['id']; ?>" value="<?php print $child['birthday'];?>" onfocus="scroll_here(this);this.select();" /><br /><small>Please use MM/DD/YYYY format. Example: 01/11/2008</td>
+					<td class="input"><input type="text" name="children[<?php print $child['id']; ?>][birthday]" class="birthdate" id="birthday<?php print $child['id']; ?>" value="<?php print $child['birthday'];?>" onfocus="scroll_here(this);this.select();" /><br /><small>Please use MM/DD/YYYY format. Example: 01/11/2008</td>
 				</tr>
 				<tr>
 					<td class="legend">Kidopolis Room</td>
@@ -233,15 +233,15 @@ include "header.php";
 
 				<tr>
 					<td class="legend">First Name</td>
-					<td class="input"><input name="children[0][first_name]" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="children[0][first_name]" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">Last Name</td>
-					<td class="input"><input name="children[0][last_name]" onfocus="scroll_here(this);this.select();" /></td>
+					<td class="input"><input type="text" name="children[0][last_name]" onfocus="scroll_here(this);this.select();" /></td>
 				</tr>
 				<tr>
 					<td class="legend">Birthday</td>
-					<td class="input"><input name="children[0][birthday]" class="birthdate" id="birthday0" onfocus="scroll_here(this);this.select();" /><br /><small>Please use MM/DD/YYYY format. Example: 01/11/2008</td>
+					<td class="input"><input type="date" name="children[0][birthday]" class="birthdate" id="birthday0" onfocus="scroll_here(this);this.select();" /><br /><small>Please use MM/DD/YYYY format. Example: 01/11/2008</td>
 				</tr>
 				<tr>
 					<td class="legend">Allergies</td>

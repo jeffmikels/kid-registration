@@ -11,7 +11,8 @@ authenticate();
 // but then try visiting any other page, they get redirected to the public registration page again.
 // the only pages they are allowed to view are pre-register.php, ajax.php, and household.php
 // -- ajax and household do their own checks to make sure family information is not made public.
-if ( $_SESSION['logged_in'] === 'public'
+if ( isset($_SESSION['logged_in'])
+	and $_SESSION['logged_in'] === 'public'
 	and strpos($_SERVER['REQUEST_URI'], 'pre-register') === false
 	and strpos($_SERVER['REQUEST_URI'], 'ajax.php') === false
 	and strpos($_SERVER['REQUEST_URI'], 'household.php') === false)
@@ -561,16 +562,14 @@ function save_child($child, $household=NULL)
 
 	// FROM THIS POINT ON, EACH ARRAY KEY HAS BEEN COPIED TO A SEPARATE VARIABLE
 	// THEREFORE, WE HAVE $id, $parent_note, and so on.
-
-	if (! isset($child['last_room']) ) $last_room = get_child_room($child);
-	if (! isset($child['status']) ) $status = 'active';
+	if (! isset($last_room) ) $last_room = get_child_room($child);
+	if (! isset($status) ) $status = 'active';
 
 
 	// if child_id is set and greater than zero, do deletes or updates otherwise do inserts
 	if (isset($child['id']) AND $child['id'] > 0)
 	{
 		// WE ARE HERE BECAUSE THIS CHILD ALREADY EXISTS IN THE DATABASE
-
 		$child_id = $child['id'];
 		// if the delete flag is set, do a delete
 		if ($child['delete'] == 'yes')
@@ -606,8 +605,6 @@ function save_child($child, $household=NULL)
 	else
 	{
 		// WE ARE HERE BECAUSE THIS IS A NEW CHILD
-
-
 		// insert child into children table
 		$sql = sprintf("INSERT INTO children (last_name,first_name,birthday,parent_note,status,last_room) VALUES ('%s', '%s', '%s', '%s','%s',%s)",
 			$db->escapeString(trim($last_name)),
@@ -698,7 +695,7 @@ function compute_age($child)
 	$birthday = new DateTime();
 	$birthday->setTimestamp($child['birthday_timestamp']);
 	$age = $birthday->diff($today);
-	$age = $age->format('%y');
+	$age = round($age->format('%a') / 365, 2);
 	return $age;
 }
 
@@ -818,7 +815,6 @@ function get_last_room($child)
 	// get most recent room and default to that if no room, guess from age;
 	$sql = sprintf("SELECT attendance.room_id FROM attendance WHERE attendance.child_id='%s' ORDER BY attendance.date DESC LIMIT 1", $db->escapeString($child_id));
 	$result = $db->query($sql);
-	//$row = $result->fetchArray(SQLITE3_ASSOC);
 	$row = $result->fetch_assoc();
 	if ($row) return $row['room_id'];
 	else return -1;
@@ -938,11 +934,11 @@ function get_attendance($child_id = '')
 	global $db;
 	if ($child_id)
 	{
-		$sql = sprintf("SELECT * FROM attendance, children WHERE attendance.child_id=children.id AND attendance.child_id='%s' ORDER BY attendance.date DESC", $db->escapeString($child_id));
+		$sql = sprintf("SELECT *, attendance.id as attendance_id FROM attendance, children WHERE attendance.child_id=children.id AND attendance.child_id='%s' ORDER BY attendance.date DESC", $db->escapeString($child_id));
 	}
 	else
 	{
-		$sql = "SELECT * FROM attendance, children WHERE attendance.child_id=children.id ORDER BY attendance.date DESC";
+		$sql = "SELECT *, attendance.id as attendance_id FROM attendance, children WHERE attendance.child_id=children.id ORDER BY attendance.date DESC";
 	}
 	return $db->get_rows($sql);
 }
@@ -951,7 +947,7 @@ function get_attendance($child_id = '')
 function get_attendance_by_date($date)
 {
 	global $db;
-	$sql = sprintf("SELECT * FROM attendance, children WHERE attendance.child_id=children.id AND attendance.date = '%s' ORDER BY attendance.date DESC", $db->escapeString($date));
+	$sql = sprintf("SELECT *, attendance.id as attendance_id FROM attendance, children WHERE attendance.child_id=children.id AND attendance.date = '%s' ORDER BY attendance.date DESC", $db->escapeString($date));
 	return $db->get_rows($sql);
 }
 
@@ -960,24 +956,29 @@ function toggle_attendance($attendance, $notify=false)
 	global $db;
 	global $err;
 	$retval = save_attendance($attendance, $notify);
-	// if the save found a pre-existing check-in, it returns a 2
-	// in that case, we want to DELETE the check-in.
-	if (is_array($retval))
-	{
-		$attendance_id = $retval['id'];
-		$sql = sprintf("DELETE FROM attendance WHERE child_id='%s' AND date='%s' AND room_id='%s'",
-			$db->escapeString($attendance['child_id']),
-			$db->escapeString($attendance['date']),
-			$db->escapeString($attendance['room_id']));
-		$db->query($sql);
+	// if the save found a pre-existing check-in, it returns an array
+	// otherwise, it just returns 1
+	
+	if ($retval === 1) return $retval;
+	else return delete_attendance($attendance);
+}
 
-		$sql = sprintf("DELETE FROM attendance_notification_queue WHERE child_id='%s' AND attendance_id='%s'",
-			$db->escapeString($attendance['child_id']),
-			$db->escapeString($attendance_id));
-		$result = $db->query($sql);
-		return 2;
-	}
-	return $retval;
+function delete_attendance($attendance)
+{
+	global $db;
+	global $err;
+	$attendance_id = $retval['id'];
+	$sql = sprintf("DELETE FROM attendance WHERE child_id='%s' AND date='%s' AND room_id='%s'",
+		$db->escapeString($attendance['child_id']),
+		$db->escapeString($attendance['date']),
+		$db->escapeString($attendance['room_id']));
+	$db->query($sql);
+
+	$sql = sprintf("DELETE FROM attendance_notification_queue WHERE child_id='%s' AND attendance_id='%s'",
+		$db->escapeString($attendance['child_id']),
+		$db->escapeString($attendance_id));
+	$result = $db->query($sql);
+	return 2;
 }
 
 function save_attendance($attendance, $notify=false)
@@ -1000,7 +1001,12 @@ function save_attendance($attendance, $notify=false)
 	}
 	else
 	{
-		$sql = sprintf("INSERT INTO attendance (child_id, date, room_id, note) VALUES ('%s','%s', '%s', '%s')", $child_id, $date, $room_id, $note);
+		$sql = sprintf("INSERT INTO attendance (child_id, date, room_id, note) VALUES ('%s','%s', '%s', '%s')",
+			$db->escapeString($child_id),
+			$db->escapeString($date),
+			$db->escapeString($room_id),
+			$db->escapeString($note)
+		);
 		$result = $db->query($sql);
 		$attendance_id = $db->lastInsertRowid();
 		set_child_status($child_id, 'active');
@@ -1013,12 +1019,24 @@ function save_attendance($attendance, $notify=false)
 	}
 }
 
+function update_attendance_behaviors($id, $behaviors)
+{
+	global $db;
+	$sql = sprintf("UPDATE attendance SET behaviors='%s' WHERE id='%s'",
+		$db->escapeString($behaviors),
+		$db->escapeString($id)
+	);
+	$result = $db->query($sql);
+	return $result;
+}
+
 function simple_sms($cell, $msg)
 {
-	$cell = escapeshellarg($cell);
-	$msg = escapeshellarg($msg);
-	$cmd = SMS_COMMAND . " $cell $msg > /dev/null 2>&1 &";
+	$shellcell = escapeshellarg($cell);
+	$shellmsg = escapeshellarg($msg);
+	$cmd = SMS_COMMAND . " $shellcell $shellmsg > /dev/null 2>&1 &";
 	exec($cmd);
+	return array('cell'=> $cell, 'message' => $msg, 'comment'=>'sent immediately');
 }
 
 function notify_parent($child_id, $msg, $attendance_id='', $immediately=false, $force=false)
@@ -1043,13 +1061,11 @@ function notify_parent($child_id, $msg, $attendance_id='', $immediately=false, $
 		$msg = str_replace("[$key]", $value, $msg);
 	}
 	$msg = $displayname . ": $msg";
-	$cell = escapeshellarg($cell);
-	$msg = escapeshellarg($msg);
 	if ($immediately)
 	{
-		$cmd = SMS_COMMAND . " $cell $msg > /dev/null 2>&1 &";
-		exec($cmd);
-		return "sent immediately";
+		// $cmd = SMS_COMMAND . " $cell $msg > /dev/null 2>&1 &";
+		// exec($cmd);
+		return simple_sms($cell, $msg);
 	}
 	else
 	{
@@ -1246,7 +1262,7 @@ function make_table($columns, $data, $table_class="", $link="", $headline)
 
 // INITIALIZATION CODE
 $db = new my_db_mysql();
-if ($_GET['install'] and $allow_install)
+if (isset($_GET['install']) and $allow_install)
 {
 	do_install();
 }
@@ -1401,6 +1417,99 @@ if ($is_testing)
 	}
 }
 
+function send_behavior_reports($service_timestamp)
+{
+	global $rooms;
+	
+	// first, we grab all the attendance items for the specified timestamp
+	$attendance = get_attendance_by_date($service_timestamp);
+	// print_r($attendance);
+	
+	// second, to save queries, we grab all children from the database
+	$children = array();
+	foreach (get_children() as $child)
+	{
+		$children[$child['child_id']] = $child;
+	}
+	// print_r($children);
+	
+	
+	// third, we walk through each attendance item, and send an email to the parents
+	foreach($attendance as $attendance_item)
+	{
+		// print_r($attendance_item);
+		// print_r($rooms[$attendance_item['room_id']]);
+		
+		$child_id = $attendance_item['child_id'];
+		$first_name = ucwords(strtolower($children[$child_id]['first_name']));
+		$room_name = $rooms[$attendance_item['room_id']]['name'];
+		$behaviors = json_decode($attendance_item['behaviors'], true);
+		// print_r($behaviors);
+		
+		$status = $behaviors['status'];
+		$text = array();
+		
+		foreach(array('good','bad') as $behavior_key)
+		{
+			$text[$behavior_key] = '';
+			if (!isset($behaviors[$behavior_key])) continue;
+			
+			if (count($behaviors[$behavior_key]) < 3) $text[$behavior_key] = implode(' and ', $behaviors[$behavior_key]);
+			else
+			{
+				$last_element = array_pop($behaviors[$behavior_key]);
+				$text[$behavior_key] = implode(', ', $behaviors[$behavior_key]) . ', and ' . $last_element;
+			}
+		}
+		
+		$behavior_text = '';
+		if ($text['good'] and $text['bad']) $behavior_text = $first_name . ' ' . $text['good'] . '; however, ' . $first_name . ' also ' . $text['bad'] . '.<p>We want you to know that we consider it a true joy to have ' . $first_name . ' in our class, so we would like to work with you find some solutions to the negative behavior. Please let us know if there is any way we can help you as you address this with your child.';
+		
+		elseif ($text['good']) $behavior_text = $first_name . ' ' . $text['good'] . '.<p>We want to make sure you know what a joy it is to have ' . $first_name . ' in our class, so we want to encourage you to keep up the good work of helping your child develop. Please let us know if there is any way we can help you or encourage you as you raise your child.';
+		
+		elseif ($text['bad']) $behavior_text = $first_name . ' ' . $text['bad'] . '.<p>We want to make sure you know what a joy it is to have ' . $first_name . ' in our class, so we would like to work with you find some solutions to the negative behavior. Please let us know if there is any way we can help you as you address this with your child.';
+		
+		$status_text = '';
+		if ($status) $status_text = "Today, $first_name earned the behavior status of \"$status\"";
+		
+		if ($behavior_text) $status_text .= ", and the teachers in $room_name wanted you to know why:";
+		elseif ($status_text) $status_text .= ".";
+		
+		$email_msg = <<<EOF
+		<h2>KIDOPOLIS at LCC</h2>
+		<hr />
+		<p>Thank you for bringing <strong>$first_name</strong> to <strong>$room_name</strong> today!
+
+		<p>It is our pleasure to work with you to help your children come to know about God and how much he loves them.
+
+		<p>$status_text
+
+		<p>$behavior_text
+
+		<p><strong>Helping children find life in Christ,</strong><br />
+		Your Kidopolis Team
+EOF;
+
+		print_r ($email_msg);
+		
+		$to = "jeffmikels@gmail.com";
+		$subject = "LCC Kidopolis Behavior Report for $first_name";
+
+
+		// To send HTML mail, the Content-type header must be set
+		$headers  = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		$headers .= 'To: grace2-8@hotmail.com, jeffmikels@gmail.com' . "\r\n";
+		//$headers .= 'From: Jeff Mikels <jeffmikels@gmail.com>' . "\r\n";
+		$headers .= 'X-Mailer: PHP/' . phpversion();
+
+		// Mail it
+		mail($to, $subject, $email_msg, $headers);
+		
+	}
+	
+}
+
 
 /* AUTHENTICATION */
 function logout()
@@ -1414,6 +1523,7 @@ function authenticate()
 {
 	global $cookiename;
 	global $auth_password;
+	global $apikey;
 
 	// process posted data
 	if (isset($_POST['key']) and $_POST['key'] == $auth_password)
@@ -1428,6 +1538,7 @@ function authenticate()
 		setcookie($cookiename, "True");
 		return;
 	}
+	elseif (isset($_POST['apikey']) and $_POST['apikey'] == $apikey) return;
 
 	// look for session data and cookies already set
 	if ( isset($_SESSION['logged_in']) or isset($_COOKIE[$cookiename]) or isset($_GET['login_override'])) return;

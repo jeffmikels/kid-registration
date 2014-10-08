@@ -61,7 +61,7 @@ $body_class = "home";
 		#header-logo {background:rgba(25, 181, 194, 0);width:100%;padding:3px 10px;box-sizing:border-box;}
 		.header-logo {width:200px;image-shadow:0px 0px 30px black;}
 		.header-logo { -webkit-filter: drop-shadow(0px 0px 5px #19b5c2); filter: drop-shadow(0px 0px 5px #19b5c2); }
-		.page-head {font-family: "Archivo Narrow";font-size:350px;color:white;text-shadow:0px 0px 50px #19b5c2;font-weight:bold;letter-spacing:-20px; position:absolute; top:100px;left:3%;}
+		.page-head {font-family: "Archivo Narrow";font-size:320px;color:white;text-shadow:0px 0px 50px #19b5c2;font-weight:bold;letter-spacing:-20px; position:absolute; top:100px;left:3%;}
 		#get-started-button {padding:30px;height:auto;position:absolute;left:550px;top:450px;}
 
 	</style>

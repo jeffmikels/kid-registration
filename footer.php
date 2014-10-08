@@ -1,10 +1,12 @@
 	</div>
 </div>
+<?php if (!(isset($doing_pre_register) && $doing_pre_register)):?>
 <div class="nav" style="margin: 600px auto 0px; font-size: 1.2em;width:100%;position:relative;">
 	<div style="text-align: center;position:relative;">
 	<a class="smallbutton gray" href="room_checkin.php">Room Checkin Interface</a>
 	</div>
 </div>
+<?php endif; ?>
 <div id="idle-alert-overlay">Tap any key if you need more time.</div>
 </body>
 <script>

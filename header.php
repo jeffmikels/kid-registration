@@ -8,7 +8,7 @@
 	<?php if (isset($_GET['force_mobile'])) { ?><meta name="viewport" content="width=480" /><?php }?>
 
 	<!-- STYLESHEETS -->
-	<link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>
+	<!-- <link href='http://fonts.googleapis.com/css?family=Rambla:400,700|Archivo+Narrow:400,700' rel='stylesheet' type='text/css'> -->
 
 	<link rel="stylesheet" href="css/anytimec.css" type="text/css" media="all" />
 	<link rel="stylesheet" type="text/css" href="css/excite-bike/jquery-ui-1.8.16.custom.css" />
